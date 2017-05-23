@@ -61,8 +61,9 @@
       <input class="form-control center-block hovercard-light" id="secret" type="password" placeholder="Secret (needed to make custom)" name="secret">
       <center><button class="btn btn-filled hover-light" style="padding: 0px 30px 0px;" id="submit" type="submit">Shorten</button></center>
     </div>
-    <div style="padding: 0px 30px 10px;">
+    <div id="copyContainer" style="padding: 0px 30px 10px; visibility : hidden">
       <div id="shortcode"></div>
+      <center><button class="btn btn-filled hover-light" style="padding: 0px 30px 0px;" id="copy">Copy</button></center>
     </div>
     <p style="padding: 0px 30px"><a href="#" tagret="_blank" style="color:#666!important;font-weight:normal;">Privacy Policy</a> | <a href="#" tagret="_blank" style="color:#666!important;font-weight:normal;">Terms of Service</a></p>
   </div>
@@ -76,6 +77,17 @@
   </script>
   <script>
     $(function() {
+      $('#copy').click(function(){
+          var temp = $('<input>');
+        temp.val($('#copymaker').text());
+        console.log(temp.val());
+        $('body').append(temp);
+        temp.select();
+        console.log(document.execCommand('copy'));
+        temp.remove();
+        $('#copymaker').css("color","white");
+      });
+
       $('#submit').click(function() {
 
         var URLregex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
@@ -101,17 +113,20 @@
             if (typeof data == 'string') {
               $('#shortcode').html(data)
             } else {
-              $('#shortcode').html("<div class=\"shortcode hovercard-light\">" +
+              $('#shortcode').html("<center class=\"shortcode hovercard-light\">" +
                 (data.existed ? "Already existed : " : "") +
-                '<a href=' + '"/' + data.shortcode + '">' +
+                '<a id="copymaker" href=' + '"/' + data.shortcode + '">' +
                 window.location.origin + '/' + data.shortcode +
                 (data.existed ?
-                  '</a> : pointing to : <a href="' + data.longURL + '">' + data.longURL :
+                  '<center></a> : pointing to : <a href="' + data.longURL + '">' + data.longURL :
                   "") +
-                '</a></div>'
+                '</a></center></div>'
               );
+              $('#copymaker').css("visibility","visible");
             }
           }) //post request ends here
+          $('#copy').css("visibility" , "visible");
+          $('#copy').css('display','inline-block');
         } //end of if else block
       })
     })
